@@ -3,15 +3,15 @@
     "opentofu":  "latest",
     "jq":        "latest",
     "keepassxc": "latest",
-    "gitleaks":  "latest"
+    "gitleaks":  "latest",
+    "shellcheck": "latest"
   },
   "shell": {
     "scripts": {
       "github-tofu": ["sh scripts/github-tf.sh \"$@\""],
       "ci": [
         "devbox run validate",
-        "sh -n scripts/github-tf.sh",
-        "sh -n scripts/github-app.sh",
+        "shellcheck scripts/*.sh",
         "gitleaks git --redact --no-banner ."
       ],
       "validate": [

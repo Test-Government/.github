@@ -48,7 +48,11 @@ if [ -n "$LOCAL" ]; then
   if git -C "$ROOT" ls-files --error-unmatch -- "$LOCAL" >/dev/null 2>&1; then
     echo "github-tf: REFUSED: $LOCAL is tracked by git. It is a local file: git rm --cached it." >&2; exit 1
   fi
-  set -a; . "$LOCAL"; set +a
+  # The user's own file, not in the repository: nothing for shellcheck to follow.
+  set -a
+  # shellcheck source=/dev/null
+  . "$LOCAL"
+  set +a
 fi
 
 # The root applies from THIS checkout. A change merged on the remote but not pulled here would
