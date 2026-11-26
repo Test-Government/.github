@@ -7,6 +7,11 @@
   "shell": {
     "scripts": {
       "github-tofu": ["sh scripts/github-tf.sh \"$@\""],
+      "ci": [
+        "devbox run validate",
+        "sh -n scripts/github-tf.sh",
+        "sh -n scripts/github-app.sh"
+      ],
       "validate": [
         "tofu -chdir=tofu/github init -backend=false -input=false",
         "tofu -chdir=tofu/github validate",

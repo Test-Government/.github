@@ -47,7 +47,8 @@ and editor configuration. There is no style guide; `CONTRIBUTING.md` lists the c
 Everything runs on an owner's own machine, never in an agent session.
 
 ```sh
-devbox run validate                 # no token needed
+devbox run ci                       # the gate: validate plus a syntax check of the scripts; no token needed
+devbox run validate                 # tofu init, validate and fmt check only
 devbox run github-tofu plan         # opens the admin wallet
 devbox run github-tofu apply
 ```
