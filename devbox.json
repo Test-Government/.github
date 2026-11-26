@@ -1,10 +1,11 @@
 {
   "packages": {
-    "opentofu":  "latest",
-    "jq":        "latest",
-    "keepassxc": "latest",
-    "gitleaks":  "latest",
-    "shellcheck": "latest"
+    "opentofu":   "latest",
+    "jq":         "latest",
+    "keepassxc":  "latest",
+    "gitleaks":   "latest",
+    "shellcheck": "latest",
+    "actionlint": "latest"
   },
   "shell": {
     "scripts": {
@@ -12,6 +13,7 @@
       "ci": [
         "devbox run validate",
         "shellcheck scripts/*.sh",
+        "actionlint .github/workflows/*.yml templates/ci-caller.yml",
         "gitleaks git --redact --no-banner ."
       ],
       "validate": [

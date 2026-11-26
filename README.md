@@ -37,6 +37,7 @@ through. First-time setup, or recreating it from nothing: [BOOTSTRAP.md](BOOTSTR
 | `scripts/github-tf.sh` | runs tofu with the admin token from its wallet (`devbox run github-tofu`) |
 | `scripts/github-app.sh` | creates, verifies and mints tokens for the App |
 | `.github/workflows/ci.yml` | the one CI job every repository calls: it runs that repository's `devbox run ci` and nothing else |
+| `.github/workflows/ci-self.yml` | this repository's own CI: calls `ci.yml` from the same checkout, so a change to the shared job or a bump of its pinned actions runs before it merges |
 | `templates/CODEOWNERS`, `templates/ci-caller.yml` | what each repository starts from |
 
 Not inherited from here, so each repository keeps its own: `LICENSE`, `CODEOWNERS`, and formatter
@@ -47,7 +48,7 @@ and editor configuration. There is no style guide; `CONTRIBUTING.md` lists the c
 Everything runs on an owner's own machine, never in an agent session.
 
 ```sh
-devbox run ci                       # the gate: validate, shellcheck, gitleaks; no token needed
+devbox run ci                       # the gate: validate, shellcheck, actionlint, gitleaks; no token needed
 devbox run validate                 # tofu init, validate and fmt check only
 devbox run github-tofu plan         # opens the admin wallet
 devbox run github-tofu apply

@@ -1,0 +1,19 @@
+# This repository's own CI: it calls the shared job (ci.yml) from the same checkout, not @main.
+# So a pull request that changes ci.yml, or bumps an action pinned in it, runs the CHANGED job
+# before it merges. Every other repository calls ci.yml@main and gets a change only afterwards.
+#
+# No path filter: a required check must report on every pull request, or the pull request can
+# never merge.
+name: ci-self
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml

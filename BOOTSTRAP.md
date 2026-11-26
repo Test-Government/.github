@@ -107,7 +107,8 @@ the old token on GitHub.
 - **Publishing workflows** must not be startable by hand on a branch (`workflow_dispatch` without
   an environment or a branch condition): a tag, which only an owner creates, is what publishes.
 - **`devbox run ci` per repository.** The shared job (`.github/workflows/ci.yml`) and the caller
-  (`templates/ci-caller.yml`) are written and have never run. Each repository needs its own
+  (`templates/ci-caller.yml`) are written and have never run. This repository calls the shared
+  job itself (`ci-self.yml`): its first run, on the first push, is the first test of both. Each repository needs its own
   `devbox.json` with a `ci` script, and its caller pushed by a person. The check's name in a pull
   request is probably `ci / ci` (caller job / called job): read it off the first run before
   adding it to `required_checks`.
