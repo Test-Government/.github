@@ -2,7 +2,8 @@
   "packages": {
     "opentofu":  "latest",
     "jq":        "latest",
-    "keepassxc": "latest"
+    "keepassxc": "latest",
+    "gitleaks":  "latest"
   },
   "shell": {
     "scripts": {
@@ -10,7 +11,8 @@
       "ci": [
         "devbox run validate",
         "sh -n scripts/github-tf.sh",
-        "sh -n scripts/github-app.sh"
+        "sh -n scripts/github-app.sh",
+        "gitleaks git --redact --no-banner ."
       ],
       "validate": [
         "tofu -chdir=tofu/github init -backend=false -input=false",

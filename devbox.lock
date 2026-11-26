@@ -5,6 +5,54 @@
       "last_modified": "2026-11-22T18:15:35Z",
       "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356?lastModified=1795371335&narHash=sha256-oa2P5WZer1A4wuhatl92JyHHEjrrOdIyuvTuI5LUi9Q%3D"
     },
+    "gitleaks@latest": {
+      "last_modified": "2026-11-22T18:15:35Z",
+      "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356#gitleaks",
+      "source": "devbox-search",
+      "version": "8.30.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/bm9hb8w0xyx4vm65ypcy7zc6fvzc4pwy-gitleaks-8.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/bm9hb8w0xyx4vm65ypcy7zc6fvzc4pwy-gitleaks-8.30.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4z27z7k43cpga70mh1wl3q5sw0mxsjk1-gitleaks-8.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4z27z7k43cpga70mh1wl3q5sw0mxsjk1-gitleaks-8.30.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/v5x4dkl13y4nxhcaq4xmrwkidy44gv9p-gitleaks-8.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/v5x4dkl13y4nxhcaq4xmrwkidy44gv9p-gitleaks-8.30.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/3j733b3yngda91i969cg6jsf6hvx78ix-gitleaks-8.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/3j733b3yngda91i969cg6jsf6hvx78ix-gitleaks-8.30.1"
+        }
+      }
+    },
     "jq@latest": {
       "last_modified": "2026-11-22T18:15:35Z",
       "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356#jq",
