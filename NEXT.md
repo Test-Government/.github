@@ -4,9 +4,8 @@ The next steps, in order. At most 40 lines. Delete a line when it is done.
 
 ## Needs an organisation owner
 
-1. Apply again once the required check has merged (`tofu/github/variables.tf`): 1 to change.
-2. `SID-mock` still has a classic branch protection on `master`. Compare it with the ruleset,
-   then delete it (Settings, Branches) so tofu is the only source.
+1. Apply once this has merged: 1 to change (the required check on `.github`) and 1 to add
+   (`SID-mock`'s tag ruleset, without the creation rule).
 
 ## Ready
 
