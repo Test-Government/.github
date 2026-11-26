@@ -38,7 +38,8 @@ variable "repos" {
   # Not yet under rules: smart-id-mock, ee-eid-test-pki, TSL-test-server, mock-ocsp,
   # DD4J-test-application, nordic-testing-days-2024-talk.
   default = {
-    ".github" = {} # this repository
+    # this repository. The check is ci-self.yml's job: caller job / called job.
+    ".github" = { required_checks = ["ci / ci"] }
     # Smart-ID v2 only: no new work, fixed if it breaks for someone (default branch master).
     # Tags unprotected: its workflow releases on every merge to master and creates the version
     # tag itself, with the workflow's token. A tag ruleset would refuse that step.

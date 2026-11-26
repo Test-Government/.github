@@ -5,10 +5,7 @@ The next steps, in order. At most 40 lines. Delete a line when it is done.
 ## Needs an organisation owner
 
 1. First apply: `BOOTSTRAP.md` steps 3 to 6 (admin token, plan, apply, check the gate).
-2. After the first `ci-self` run: read the check's name off the run (probably `ci / ci`) and put
-   it in `required_checks` for `.github` in `tofu/github/variables.tf`. A check that never reports
-   leaves every pull request unmergeable, so not before it has run.
-3. After the apply: `SID-mock` still has a classic branch protection on `master`. Compare it with
+2. After the apply: `SID-mock` still has a classic branch protection on `master`. Compare it with
    the new ruleset, then delete it (Settings, Branches) so tofu is the only source.
 
 ## Ready
