@@ -30,7 +30,7 @@ variable "repos" {
     required_checks           = optional(list(string), [])
     required_approvals        = optional(number, 0)   # a maintainer merges their own PR; raise it when a second reviewer exists
     require_code_owner_review = optional(bool, false) # with it on, an owner's own PR needs another owner
-    protect_tags              = optional(bool, true)
+    protect_tags              = optional(bool, true)  # false where a workflow creates the tags: release on merge
   }))
   # Starting small: a repository not listed here has no ruleset and is untouched. Removing an
   # entry deletes that repository's rulesets. required_checks are left empty on purpose: fill
@@ -38,8 +38,11 @@ variable "repos" {
   # Not yet under rules: smart-id-mock, ee-eid-test-pki, TSL-test-server, mock-ocsp,
   # DD4J-test-application, nordic-testing-days-2024-talk.
   default = {
-    ".github"      = {} # this repository
-    SID-mock       = {} # Smart-ID v2 only: no new work, fixed if it breaks for someone (default branch master)
+    ".github" = {} # this repository
+    # Smart-ID v2 only: no new work, fixed if it breaks for someone (default branch master).
+    # Tags unprotected: its workflow releases on every merge to master and creates the version
+    # tag itself, with the workflow's token. A tag ruleset would refuse that step.
+    SID-mock       = { protect_tags = false }
     mobile-id-mock = {} # new, created by repos.tf; where a ruleset change is tried first
   }
 }

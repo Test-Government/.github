@@ -1,7 +1,8 @@
 # Branch and tag protection for every repository in var.repos, as repository rulesets.
 #
-# Repository rulesets, not an organisation ruleset: organisation rulesets need a paid plan, while
-# repository rulesets on public repositories are free. A new repository is therefore NOT covered
+# Repository rulesets, not an organisation ruleset: organisation rulesets need a paid plan, and
+# the organisation stays on the free one (docs/adr/0002). Repository rulesets on public
+# repositories are free. A new repository is therefore NOT covered
 # until it is added to var.repos. One that repos.tf creates gets its rulesets in the same apply.
 #
 # The shape: agents push branches through a GitHub App and open pull requests. The App is in no
