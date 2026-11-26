@@ -52,8 +52,9 @@ chart. It is new, so nothing has to be migrated, and a ruleset change is tried o
 For the mocks that need it. Two release models are in use, and a repository has one of them:
 - an owner creates a tag and the tag publishes (`ee-eid-test-pki`, `smart-id-mock`): tags are
   protected;
-- a merge to the default branch publishes and the workflow creates the tag (`SID-mock`): tags
-  are unprotected (`protect_tags = false`), and the merged pull request is the release decision.
+- a merge to the default branch publishes and the workflow creates the tag (`SID-mock`):
+  creating a tag is open (`workflow_creates_tags = true`), existing tags stay immutable, and the
+  merged pull request is the release decision.
 
 Before a repository's images or charts are relied on:
 - its publishing workflow must not be startable by hand on a branch (`workflow_dispatch` without

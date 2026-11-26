@@ -5,9 +5,14 @@
 # repositories are free. A new repository is therefore NOT covered
 # until it is added to var.repos. One that repos.tf creates gets its rulesets in the same apply.
 #
-# The shape: agents push branches through a GitHub App and open pull requests. The App is in no
-# bypass list, so its contents:write cannot reach a default branch or create a tag. A person
-# approves; with CODEOWNERS in the repository, a code owner approves.
+# What these rules do and do not do:
+#   - Nothing reaches a default branch except through a pull request, organisation owners
+#     included, and nobody force-pushes or deletes one.
+#   - With required_approvals = 0, the default, whoever may merge a pull request may merge their
+#     own. The rules do not decide WHO may merge: that is write access, and for an agent session
+#     the token it works with (README.md).
+#   - Tags: only owners create, move or delete one. Where workflow_creates_tags is set, creating
+#     is open to anyone with write access, and moving and deleting stay with owners.
 
 # Default branch: changes arrive by pull request, with review; no force-push, no deletion.
 resource "github_repository_ruleset" "default_branch" {
@@ -68,7 +73,8 @@ resource "github_repository_ruleset" "default_branch" {
 }
 
 # Tags: only organisation owners create, move or delete them. Publishing workflows trigger on tags,
-# so a tag is a release decision and stays with a person.
+# so a tag is a release decision and stays with a person. A repository that releases on merge
+# (workflow_creates_tags) lets its workflow create the tag; an existing tag is still immutable.
 resource "github_repository_ruleset" "tags" {
   for_each = { for k, v in var.repos : k => v if v.protect_tags }
 
@@ -91,7 +97,7 @@ resource "github_repository_ruleset" "tags" {
   }
 
   rules {
-    creation         = true
+    creation         = !each.value.workflow_creates_tags
     update           = true
     deletion         = true
     non_fast_forward = true

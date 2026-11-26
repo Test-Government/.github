@@ -15,8 +15,9 @@ through. First-time setup, or recreating it from nothing: [BOOTSTRAP.md](BOOTSTR
   maintainers, a rule that needs a second person stops the work.
 - **Tags:** only organisation owners create, move or delete them. A tag is what publishes, so a
   release stays a person's decision. The exception is a repository that releases on merge: its
-  workflow creates the tag after a merge to the default branch, so its tags are left unprotected
-  (`protect_tags = false`) and the merged pull request is the release decision.
+  workflow creates the tag after a merge to the default branch, so creating a tag is open there
+  (`workflow_creates_tags = true`) and the merged pull request is the release decision. Moving
+  or deleting an existing tag stays with owners.
 - **Organisation owners** bypass the tag rule, and the default-branch rule only through a pull
   request (`admin_bypass_mode`): nobody pushes to a default branch directly.
 - **The agents App** (`github-apps.json`, `scripts/github-app.sh`) is declared for unsupervised
