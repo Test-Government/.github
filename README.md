@@ -7,8 +7,22 @@ through. First-time setup, or recreating it from nothing: [BOOTSTRAP.md](BOOTSTR
 ## The rules it enforces
 
 - **Agents push branches, people merge.** Supervised agent sessions push branches and open pull
-  requests with a maintainer's own repository-scoped token, held outside the session; landing a
+  requests with a maintainer's own repository-scoped tokens, held outside the session; landing a
   pull request is a person's click.
+- **Tokens for an agent session: two, never one, and neither inside the session.** The rulesets
+  alone do not make "people merge" true: with no required approvals, whoever can merge a pull
+  request can merge their own, and an owner's token carries the owner's bypass of the tag rule.
+  What makes it true is the tokens and whatever holds them:
+  - a git token with Contents read and write, usable only for `git push` of branches: no API,
+    no tags;
+  - an API token with Pull requests, Issues and Actions read and write, and Contents **read**.
+    Without Contents write GitHub itself refuses a merge, a tag and a release;
+  - the holder of the tokens refuses what the API token's permissions still allow and a person
+    should decide: starting a workflow by hand, an approving review.
+
+  One token with Contents and Pull requests write, handed to an agent, undoes all of it. A
+  repository gets agent access only once it is in `var.repos`: without a ruleset, a branch push
+  reaches its default branch.
 - **Default branch** of every repository: changes arrive by pull request only, no force-push, no
   deletion, optional required checks. Approvals and code-owner review are off by default
   (`required_approvals`, `require_code_owner_review` per repository): with a couple of
