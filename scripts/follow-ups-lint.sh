@@ -45,12 +45,16 @@ else
   nextn=$(num "$next")
 fi
 
-# Every mention in the tracked and new files. "<file> <id>" per line.
+# Every mention in the tracked and new files. "<id> <file>" per line: the id first, so a file
+# name with spaces stays whole. A file name is data from a pull request: it is only ever passed
+# as an argument after `--` and printed with printf, never spliced into a sed or shell expression.
 refs=$(git ls-files -co --exclude-standard | while read -r f; do
   [ -f "$f" ] || continue
-  grep -Io 'FU-[0-9][0-9][0-9]' "$f" 2>/dev/null | sort -u | sed "s|^|$f |"
+  grep -Io 'FU-[0-9][0-9][0-9]' -- "$f" 2>/dev/null | sort -u | while read -r id; do
+    printf '%s %s\n' "$id" "$f"
+  done
 done)
-problems=$(printf '%s\n' "$refs" | while read -r f id; do
+problems=$(printf '%s\n' "$refs" | while read -r id f; do
   [ -n "$id" ] || continue
   if [ "$f" = "$FU" ] && [ "$id" = "$next" ]; then continue; fi
   if [ "$(num "$id")" -ge "$nextn" ]; then echo "DANGLING: $f mentions $id, at or past the counter $next"; continue; fi
@@ -58,9 +62,10 @@ problems=$(printf '%s\n' "$refs" | while read -r f id; do
 done)
 tracked=$(git ls-files -co --exclude-standard | while read -r f; do
   [ -f "$f" ] || continue
-  grep -Io 'Tracked by[^.]*FU-[0-9][0-9][0-9]' "$f" 2>/dev/null | grep -o 'FU-[0-9][0-9][0-9]' | sort -u | sed "s|^|$f |"
+  grep -Io 'Tracked by[^.]*FU-[0-9][0-9][0-9]' -- "$f" 2>/dev/null | grep -o 'FU-[0-9][0-9][0-9]' | sort -u |
+    while read -r id; do printf '%s %s\n' "$id" "$f"; done
 done)
-problems2=$(printf '%s\n' "$tracked" | while read -r f id; do
+problems2=$(printf '%s\n' "$tracked" | while read -r id f; do
   [ -n "$id" ] || continue
   is_open "$id" || echo "RETIRED: $f says 'Tracked by $id', which is not open"
 done)
