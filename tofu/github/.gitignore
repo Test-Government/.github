@@ -1,0 +1,9 @@
+# .terraform.lock.hcl is NOT ignored: commit it, it pins the provider.
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+!*.tfvars.example
+*.auto.tfvars

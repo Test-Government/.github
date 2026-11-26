@@ -1,0 +1,17 @@
+{
+  "packages": {
+    "opentofu":  "latest",
+    "jq":        "latest",
+    "keepassxc": "latest"
+  },
+  "shell": {
+    "scripts": {
+      "github-tofu": ["sh scripts/github-tf.sh \"$@\""],
+      "validate": [
+        "tofu -chdir=tofu/github init -backend=false -input=false",
+        "tofu -chdir=tofu/github validate",
+        "tofu -chdir=tofu/github fmt -check -diff"
+      ]
+    }
+  }
+}

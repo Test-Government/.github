@@ -1,0 +1,26 @@
+# Settings of scripts/github-tf.sh (devbox run github-tofu). Copy to github-tf.local, which is
+# gitignored, here or in the directory above the clone:
+#
+#     cp github-tf.local.example github-tf.local && chmod 600 github-tf.local
+#
+# This file says WHERE the organisation admin token is. It never holds the token itself: the
+# token stays in a wallet that is encrypted at rest. Every line is optional; a commented line
+# shows the default.
+
+# The KeePass wallet that holds only this organisation's admin token, and the entry in it (the
+# token is the entry's Password field).
+# GH_ADMIN_KP_DB="$HOME/Documents/test-government-admin.kdbx"
+# GH_ADMIN_KP_ENTRY=github-test-government-admin
+
+# How the wallet opens. A hardware key's challenge-response, <slot>:<serial> (a touch, no password):
+# GH_ADMIN_KP_YUBIKEY=2:12345678
+# A keyfile, used when it exists:
+# GH_ADMIN_KP_KEY="$HOME/Documents/test-government-admin.keyx"
+# With neither, keepassxc-cli asks for the wallet's password.
+
+# The keepassxc-cli to use. The default is the one from devbox; point it at your system's if that
+# is the one that reaches the hardware key.
+# KEEPASSXC_CLI=/usr/bin/keepassxc-cli
+
+# Another wallet tool instead of KeePass: a command that prints the token.
+# GITHUB_TOKEN_CMD="secret-tool lookup service github org test-government"

@@ -1,0 +1,8 @@
+# Force LF line endings so the shell scripts are never checked out as CRLF: a clone made on
+# Windows and mounted into Linux or Docker would otherwise fail on the shebang line.
+* text=auto eol=lf
+
+# Explicit for the files that MUST stay LF:
+*.sh             text eol=lf
+*.local          text eol=lf
+*.local.example  text eol=lf

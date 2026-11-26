@@ -1,0 +1,5 @@
+# Copy to terraform.tfvars (gitignored) only to override defaults. The token is never here: it
+# comes from the GITHUB_TOKEN environment variable (scripts/github-tf.sh).
+
+# enforcement       = "disabled"      # a deliberate rollback; the default is active
+# admin_bypass_mode = "always"        # owners may push to a default branch directly (the default is pull_request)

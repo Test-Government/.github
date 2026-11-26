@@ -1,0 +1,192 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-11-22T18:15:35Z",
+      "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356?lastModified=1795371335&narHash=sha256-oa2P5WZer1A4wuhatl92JyHHEjrrOdIyuvTuI5LUi9Q%3D"
+    },
+    "jq@latest": {
+      "last_modified": "2026-11-22T18:15:35Z",
+      "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356#jq",
+      "source": "devbox-search",
+      "version": "1.8.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/lq43hfzpp8v2s9vwfrbhrx0grizymbd2-jq-1.8.2-bin",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/5ix3nvhgpy8lf2w5c3f0q77l7vjlw7q4-jq-1.8.2-man",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/9iv19k0ns8mr91nrzyy64finyw45p0ws-jq-1.8.2-dev"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/y0jikij8mp03y1g31dsgxyb47zrka16h-jq-1.8.2-doc"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/gncx3i2q7k2ysikaf884p8sjk8yxyq5s-jq-1.8.2"
+            }
+          ],
+          "store_path": "/nix/store/lq43hfzpp8v2s9vwfrbhrx0grizymbd2-jq-1.8.2-bin"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/qg95y8670jagfas9d4aqpsd487clksfp-jq-1.8.2-bin",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/dzbp7b5i16pyjsa2c9sx13vxahjh9nfq-jq-1.8.2-man",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/5pawx0dpw3z6qii582nzjic02464wpj3-jq-1.8.2-dev"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/kb4p0y32m501dgq4b89as9kiiv7r80ij-jq-1.8.2-doc"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/nbijij12bkp02p00mmvgaxicpbhb7c1d-jq-1.8.2"
+            }
+          ],
+          "store_path": "/nix/store/qg95y8670jagfas9d4aqpsd487clksfp-jq-1.8.2-bin"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "bin",
+              "path": "/nix/store/nh0wly5a1h79bfjgw46sly70ljdy1xkl-jq-1.8.2-bin",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/00sg1s16cq6vld8sg6hy6q0kpxdgqzbg-jq-1.8.2-man",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/139n7kw6nx6k64k4lv9fgrvxdn4zb1ha-jq-1.8.2-dev"
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/marqbp98z757v0w2gvs1xq1p1k3kmwmz-jq-1.8.2-doc"
+            },
+            {
+              "name": "out",
+              "path": "/nix/store/i0j6x60pzdxn349nmi0flr2r35aygvkn-jq-1.8.2"
+            }
+          ],
+          "store_path": "/nix/store/nh0wly5a1h79bfjgw46sly70ljdy1xkl-jq-1.8.2-bin"
+        }
+      }
+    },
+    "keepassxc@latest": {
+      "last_modified": "2026-11-22T18:15:35Z",
+      "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356#keepassxc",
+      "source": "devbox-search",
+      "version": "2.8.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/v81d123l00nphawbyv3dzgkbfxnbl588-keepassxc-2.8.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/v81d123l00nphawbyv3dzgkbfxnbl588-keepassxc-2.8.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/j213gghgzzyrvyaw1fs0h5q5739ckz3h-keepassxc-2.8.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/m9vmzpcid4a6043wz9jrfmwhi5ccmqld-keepassxc-2.8.0-man",
+              "default": true
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/ajvcirga2zk21k0gmf2q8j64z66rjx7h-keepassxc-2.8.0-doc"
+            }
+          ],
+          "store_path": "/nix/store/j213gghgzzyrvyaw1fs0h5q5739ckz3h-keepassxc-2.8.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/zalc46pp449s9iz5yz36c3smhfgchq57-keepassxc-2.8.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/l6z6znldn09yrizqmckhdkrhg9pn0hif-keepassxc-2.8.0-man",
+              "default": true
+            },
+            {
+              "name": "doc",
+              "path": "/nix/store/i9fq9v73nb0fzbsxpvnva3i2zkp5p1lf-keepassxc-2.8.0-doc"
+            }
+          ],
+          "store_path": "/nix/store/zalc46pp449s9iz5yz36c3smhfgchq57-keepassxc-2.8.0"
+        }
+      }
+    },
+    "opentofu@latest": {
+      "last_modified": "2026-11-22T18:15:35Z",
+      "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356#opentofu",
+      "source": "devbox-search",
+      "version": "1.13.9",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/fijv8nydw8y3ssdi1cj2wjnx8p4bysh6-opentofu-1.13.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/fijv8nydw8y3ssdi1cj2wjnx8p4bysh6-opentofu-1.13.9"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/psf8b618kj9kv2ygb320w8cznlb6c45x-opentofu-1.13.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/psf8b618kj9kv2ygb320w8cznlb6c45x-opentofu-1.13.9"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/60vqi4v8n11afd5ks89j1kn7pgwfrww5-opentofu-1.13.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/60vqi4v8n11afd5ks89j1kn7pgwfrww5-opentofu-1.13.9"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+# ci (reusable): the one CI job of every repository in the organisation. All logic is the calling
+# repository's own `devbox run ci`, so the same gate runs on a laptop, in an agent session and here.
+# This file knows nothing about any repository; what `ci` does is each repository's devbox.json.
+#
+# Caller (templates/ci-caller.yml), the whole of a repository's CI workflow:
+#   jobs: { ci: { uses: Test-Government/.github/.github/workflows/ci.yml@main } }
+#
+# The job runs code from the branch under test, so it gets a read-only token and no secrets, and
+# must stay that way: anything that publishes or holds a secret is a separate workflow that runs
+# from the default branch or a tag only.
+name: ci
+
+on:
+  workflow_call:
+    inputs:
+      script:
+        description: The devbox script to run.
+        type: string
+        default: ci
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: jetify-com/devbox-install-action@05e954310554b6122a26b4880d69937f61b1eb2e # v0.16.0
+        with:
+          enable-cache: true
+
+      - name: devbox run ${{ inputs.script }}
+        env:
+          SCRIPT: ${{ inputs.script }}
+        run: devbox run "$SCRIPT"

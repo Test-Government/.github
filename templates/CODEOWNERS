@@ -1,0 +1,16 @@
+# Copy to the repository root as CODEOWNERS and replace the handles.
+#
+# With require_code_owner_review on (tofu/github, off by default), a pull request touching an owned
+# path needs an approving review from one of its owners. GitHub semantics: the LAST matching
+# pattern wins, and a pattern with no owner removes ownership. General rows first, carve-outs last.
+#
+# A team as owner (@Test-Government/maintainers) must have write access to the repository and be
+# visible; individual handles work without that.
+
+# Everything: a maintainer reads every change.
+*                   @OWNER1 @OWNER2
+
+# The gate itself and what publishes: workflows, this file, release and chart publishing config.
+# An author able to edit these unreviewed is not gated at all, whatever the ruleset says.
+/.github/           @OWNER1
+/CODEOWNERS         @OWNER1

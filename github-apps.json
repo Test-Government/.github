@@ -1,0 +1,33 @@
+{
+  "_readme": [
+    "The DECLARED permissions of every GitHub App on the organisation. GitHub has no API to SET an",
+    "App's permissions, so this file can be verified against the live App but never applied:",
+    "scripts/github-app.sh <slug> verify. Change flow: PR this file first (a 'why' per permission;",
+    "a permission without a consumer is blast radius), then click it in the App settings and approve",
+    "the update on the installation, then verify. 'absent' = decided non-grants: a live grant of one",
+    "is drift, like a missing declared one."
+  ],
+  "apps": [
+    {
+      "slug": "test-government-agents",
+      "purpose": "The agents' git identity: test-government-agents[bot] pushes branches and is the PR author, so a person can approve. Short-lived installation tokens, minted on the maintainer's machine.",
+      "installs": "selected repositories: the mock repositories, never .github",
+      "permissions": {
+        "metadata":      { "level": "read",  "why": "baseline; every App has it" },
+        "contents":      { "level": "write", "why": "clone and push branches (the rulesets keep it off default branches and tags)" },
+        "pull_requests": { "level": "write", "why": "open and update pull requests" },
+        "issues":        { "level": "write", "why": "the maintenance queue: comment on and close the issues the scheduled checks open" },
+        "actions":       { "level": "read",  "why": "read workflow runs and logs of its own pushes" },
+        "checks":        { "level": "read",  "why": "read check results on a PR (fine-grained PATs cannot; App-only)" },
+        "statuses":      { "level": "read",  "why": "read commit statuses on a PR" }
+      },
+      "absent": {
+        "workflows":      "a branch workflow can ask for packages:write, so this is publish rights; workflow changes are pushed by a person",
+        "administration": "never: rulesets and repository settings are tofu/github, applied by an owner",
+        "packages":       "publishing happens in GitHub Actions with the workflow's own GITHUB_TOKEN",
+        "secrets":        "never"
+      },
+      "bootstrap": { "redirect_port": 8766 }
+    }
+  ]
+}
