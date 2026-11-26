@@ -88,6 +88,10 @@ devbox run github-tofu apply
   public repository, or may follow the repository's visibility. Check at the first release and
   correct this line.
 - Creating a GitHub App, and creating the admin token.
+- Approving an OAuth app for the organisation. Third-party application access is restricted, so
+  a tool that logs in through the browser (an IDE's GitHub integration, the `gh` command line) is
+  refused with a 403 until an owner grants it organisation access. SSH keys and personal access
+  tokens are not affected: a clone with an SSH remote pushes without any approval.
 
 ## Known provider behaviour
 
