@@ -9,14 +9,13 @@ example shows how to add it.
 
 ## Where each repository stands
 
-"declared" means written in `tofu/github` and not yet applied. An empty cell is work not done;
-"n/a" is work that does not exist for that repository.
+An empty cell is work not done; "n/a" is work that does not exist for that repository.
 
 | Repository | Rulesets | `devbox run ci` | Calls shared CI | Image published | Helm chart | Dependency updates | Agent file |
 |---|---|---|---|---|---|---|---|
-| `.github` | declared | yes | yes (`ci-self.yml`) | n/a | n/a | | `AGENTS.md` |
-| `mobile-id-mock` | declared | | | | | | |
-| `SID-mock` | declared | | own workflows | Docker Hub | | Dependabot | |
+| `.github` | yes | yes | yes (`ci-self.yml`) | n/a | n/a | | `AGENTS.md` |
+| `mobile-id-mock` | yes | | | | | | |
+| `SID-mock` | yes | | own workflows | Docker Hub | | Dependabot | |
 | `smart-id-mock` | | | own workflow | | | | `CLAUDE.md` |
 | `ee-eid-test-pki` | | | own workflow | GHCR | | | `CLAUDE.md` |
 | `TSL-test-server` | | | | | | | |
@@ -33,8 +32,8 @@ example shows how to add it.
 ## Entries, in order
 
 ### 1. The organisation
-Rulesets applied for the three declared repositories: `BOOTSTRAP.md`. A repository joins by an
-entry in `var.repos`, once it has a `ci` to require.
+Rulesets are applied on three repositories. The next joins by an entry in `var.repos`, once it
+has a `ci` to require.
 
 ### 2. Take over what was built outside the organisation
 Work on the mocks was done in the projects that use them and now moves here, each piece by pull

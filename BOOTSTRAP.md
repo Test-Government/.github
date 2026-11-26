@@ -1,8 +1,7 @@
 # Bootstrap — setting this repository up, once
 
-Recreating the organisation's setup from nothing. Nothing here has been applied yet: `devbox run
-ci` passes, and everything that needs a credential is untested (`plan`, `apply`, `adopt`,
-`import-repos`, the App script's network paths).
+Recreating the organisation's setup from nothing. `plan` and `apply` have run as written here.
+Not yet exercised: `adopt`, `import-repos` and the App script's network paths.
 
 Everything below runs on your own machine, as an owner of the organisation.
 
