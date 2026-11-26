@@ -129,8 +129,10 @@ app_jwt() {
 }
 
 app_api() { # <method> <path> [json body]
-  curl -fsS -X "$1" -H "Authorization: Bearer $(app_jwt)" -H 'Accept: application/vnd.github+json' \
-    -H 'X-GitHub-Api-Version: 2022-11-28' ${3:+-d "$3"} "$API$2"
+  # The JWT goes to curl on stdin, so it is not on a command line for the process list to show.
+  printf 'Authorization: Bearer %s\n' "$(app_jwt)" |
+    curl -fsS -X "$1" -H @- -H 'Accept: application/vnd.github+json' \
+      -H 'X-GitHub-Api-Version: 2022-11-28' ${3:+-d "$3"} "$API$2"
 }
 
 cmd_install_id() {
