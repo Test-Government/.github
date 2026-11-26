@@ -33,7 +33,8 @@ An empty cell is work not done; "n/a" is work that does not exist for that repos
 
 ### 1. The organisation
 Rulesets are applied on three repositories. The next joins by an entry in `var.repos`, once it
-has a `ci` to require.
+has a `ci` to require. Until a repository is listed there, nothing on GitHub keeps a branch push
+off its default branch: whoever pushes to it has to hold that line themselves.
 
 ### 2. Take over what was built outside the organisation
 Work on the mocks was done in the projects that use them and now moves here, each piece by pull
@@ -56,7 +57,11 @@ For the mocks that need it. Two release models are in use, and a repository has 
   creating a tag is open (`workflow_creates_tags = true`), existing tags stay immutable, and the
   merged pull request is the release decision.
 
+No `latest` tag: an image is published under its version, and whoever consumes it pins one.
+
 Before a repository's images or charts are relied on:
+- its publish job must run only for a push, and only on the first attempt: a hand-started run
+  or a re-run of an old one must not publish;
 - its publishing workflow must not be startable by hand on a branch (`workflow_dispatch` without
   an environment or a branch condition);
 - the Workflows permission stays withheld from the tokens agent sessions use;
