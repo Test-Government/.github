@@ -1,17 +1,10 @@
 # Bootstrap — setting this repository up, once
 
-Written 2026-11-25 as a bundle, before the repository existed. At the time of writing nothing in
-it had been applied. `tofu validate` and `tofu fmt -check` pass (integrations/github 6.13.0).
-Everything that needs a credential was untested: `plan`, `apply`, `adopt`, `import-repos`, and
-the App script's network paths.
+Recreating the organisation's setup from nothing. Nothing here has been applied yet: `devbox run
+ci` passes, and everything that needs a credential is untested (`plan`, `apply`, `adopt`,
+`import-repos`, the App script's network paths).
 
 Everything below runs on your own machine, as an owner of the organisation.
-
-## Before the first push
-
-Done 2026-11-26: `CODEOWNERS` names its owner, the licence is decided (MIT), and `SECURITY.md`,
-`profile/README.md` and `CONTRIBUTING.md` were read. Still open in `CONTRIBUTING.md`, in comments
-so they do not show: the test and release sections, until publishing starts.
 
 ## Order
 
@@ -65,8 +58,7 @@ you belong to.
 What that permission is used for: creating and changing repository rulesets, reading and changing
 repository settings, and switching on private vulnerability reporting. If a plan fails with a 403
 on some repository read, the response header `x-accepted-github-permissions` names the permission
-the endpoint wants; add that one, as Read, and record it here. (Not observed: no plan has been
-run with such a token yet.)
+the endpoint wants; add that one, as Read, and record it here. (Not seen yet: no plan has run with such a token.)
 
 Store it in a KeePass wallet of its own. The token is read from the prompt, so it is in no shell
 history:
@@ -87,57 +79,11 @@ keyfile, password and other-wallet alternatives. If the touch never comes under 
 To rotate: generate a new token the same way, `keepassxc-cli edit … -p` on the same entry, delete
 the old token on GitHub.
 
-## Open at bootstrap
+## What is still open
 
-- **Plan.** Repository rulesets on public repositories are free; an organisation ruleset, which
-  would cover new repositories automatically, needs a paid plan. Which plan the organisation is
-  on was not read.
-- **`SID-mock` has a classic branch protection on `master`** (read 2026-11-26), from before the
-  rulesets. Both apply once the ruleset exists, and the stricter wins. Compare the two after the
-  first apply and delete the classic one (Settings → Branches) so tofu is the only source.
-- **`mobile-id-mock` is created by the first apply** (`tofu/github/repos.tf`). If someone creates
-  it by hand first, the apply fails on the name: `tofu import github_repository.mobile_id_mock
-  mobile-id-mock` through the wrapper, then plan again.
-- **`required_checks` are empty** for every repository.
-- **`smart-id-mock`:** the default branch `main` holds only the licence and the code is on
-  `develop`. The ruleset follows the default branch, so `develop` is unprotected until the trunk
-  is settled.
-- **Workflows permission.** Withheld from the tokens agent sessions work with, and from the App.
-  Granting it means a branch workflow could publish to GHCR without review.
-- **Publishing workflows** must not be startable by hand on a branch (`workflow_dispatch` without
-  an environment or a branch condition): a tag, which only an owner creates, is what publishes.
-- **`devbox run ci` per repository.** The shared job (`.github/workflows/ci.yml`) and the caller
-  (`templates/ci-caller.yml`) are written and have never run. This repository calls the shared
-  job itself (`ci-self.yml`): its first run, on the first push, is the first test of both. Each repository needs its own
-  `devbox.json` with a `ci` script, and its caller pushed by a person. The check's name in a pull
-  request is probably `ci / ci` (caller job / called job): read it off the first run before
-  adding it to `required_checks`.
-- **Code style.** Deliberately not written: it needs the same mining of existing code and style
-  experiments as was done for the eID projects. `CONTRIBUTING.md` lists the linters instead; none
-  is wired into any repository's `devbox run ci` yet.
-- **Agent sessions do not see this repository** from a clone of another. Whatever runs them has
-  to mount it read-only and point at `CONTRIBUTING.md`.
-- **Repositories not yet in `var.repos`** have no ruleset: nothing but habit keeps a push off
-  their default branch.
+`NEXT.md` for the next steps, `ROADMAP.md` for the rest.
 
-## Where this came from
+## Origin and licence
 
-Derived from `teststuffstash/homelab`:
-
-| homelab | here |
-|---|---|
-| `tofu/github/org_ruleset.tf` + `repo_rulesets.tf` (organisation ruleset, plus per-repository checks and approval) | one `rulesets.tf`, repository rulesets only; checks, approval and code-owner review in one ruleset; a tag ruleset added |
-| `OrganizationAdmin` bypass with `ignore_changes` on its `actor_id` | kept as is; `admin_bypass_mode` added (`always` or `pull_request`) |
-| `docs/github-apps.yaml` + `scripts/github-app-bootstrap.sh` (manifest flow, declared permissions) | `github-apps.json` + `scripts/github-app.sh`: same flow, jq only; Infisical, wallet and exporter steps dropped; `verify` and `token` added |
-| `scripts/github-tf.sh` (wallet token, stale-checkout guard, Garage state) | same guard and wallet read, hardware-key unlock added; local state with `adopt` |
-| `repos.tf`, written by hand per repository | `repos.tf` by hand only for a repository this root creates; the existing ones generated once by `import-repos` into `repos_imported.tf` |
-| `CODEOWNERS` tiers | a two-tier template |
-| organisation `SECURITY.md` written by tofu, vulnerability reporting switched on after apply | `SECURITY.md` rewritten and committed by hand; the switch kept |
-
-Not taken: Actions secrets, the reviewer, merge, sentinel and Renovate Apps, and everything
-in-cluster. The provider behaviour measured there is listed in the README.
-
-## Licence
-
-MIT (`LICENSE`), like the organisation's other repositories; decided 2026-11-26. The files derived
-from `teststuffstash/homelab`, which is AGPL-3.0, are relicensed here by their copyright holder.
+Derived from the GitHub governance of `teststuffstash/homelab` and relicensed here, by its
+copyright holder, from AGPL-3.0 to MIT (`LICENSE`), like the organisation's other repositories.

@@ -14,7 +14,9 @@ through. First-time setup, or recreating it from nothing: [BOOTSTRAP.md](BOOTSTR
   (`required_approvals`, `require_code_owner_review` per repository): with a couple of
   maintainers, a rule that needs a second person stops the work.
 - **Tags:** only organisation owners create, move or delete them. A tag is what publishes, so a
-  release stays a person's decision.
+  release stays a person's decision. The exception is a repository that releases on merge: its
+  workflow creates the tag after a merge to the default branch, so its tags are left unprotected
+  (`protect_tags = false`) and the merged pull request is the release decision.
 - **Organisation owners** bypass the tag rule, and the default-branch rule only through a pull
   request (`admin_bypass_mode`): nobody pushes to a default branch directly.
 - **The agents App** (`github-apps.json`, `scripts/github-app.sh`) is declared for unsupervised
@@ -30,6 +32,10 @@ through. First-time setup, or recreating it from nothing: [BOOTSTRAP.md](BOOTSTR
 
 | Path | What it is |
 |---|---|
+| `AGENTS.md` | where a person or an agent starts: how to continue the work, and the rules |
+| `NEXT.md`, `docs/follow-ups.md`, `ROADMAP.md` | the state of the work: the next steps, deferred work, the plan across repositories |
+| `docs/adr/` | decisions, one file each |
+| `scripts/follow-ups-lint.sh`, `.claude/` | what keeps the follow-ups honest: the lint (`devbox run follow-ups-lint`), a hook that holds a new item once against the tracker's bar, and the `/fu-sweep` skill |
 | `SECURITY.md`, `CONTRIBUTING.md` | shown on every repository of the organisation that has no file of its own. Displayed only, never copied into clones |
 | `profile/README.md` | the organisation's front page |
 | `tofu/github/` | the rulesets (`rulesets.tf`), the repositories tofu creates (`repos.tf`), and the settings of the older ones once `repos_imported.tf` exists |
@@ -48,7 +54,7 @@ and editor configuration. There is no style guide; `CONTRIBUTING.md` lists the c
 Everything runs on an owner's own machine, never in an agent session.
 
 ```sh
-devbox run ci                       # the gate: validate, shellcheck, actionlint, gitleaks; no token needed
+devbox run ci                       # the gate: validate, shellcheck, actionlint, follow-ups-lint, gitleaks; no token needed
 devbox run validate                 # tofu init, validate and fmt check only
 devbox run github-tofu plan         # opens the admin wallet
 devbox run github-tofu apply

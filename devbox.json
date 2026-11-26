@@ -10,10 +10,12 @@
   "shell": {
     "scripts": {
       "github-tofu": ["sh scripts/github-tf.sh \"$@\""],
+      "follow-ups-lint": ["sh scripts/follow-ups-lint.sh"],
       "ci": [
         "devbox run validate",
-        "shellcheck scripts/*.sh",
+        "shellcheck scripts/*.sh .claude/hooks/*.sh",
         "actionlint .github/workflows/*.yml templates/ci-caller.yml",
+        "sh scripts/follow-ups-lint.sh",
         "gitleaks git --redact --no-banner ."
       ],
       "validate": [
