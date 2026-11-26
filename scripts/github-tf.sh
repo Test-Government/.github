@@ -55,9 +55,15 @@ if [ -n "$LOCAL" ]; then
   set +a
 fi
 
-# The root applies from THIS checkout. A change merged on the remote but not pulled here would
-# read as "nothing to change", or revert it. Refuse while the remote's default branch has
-# tofu/github commits this checkout lacks. GITHUB_TF_ALLOW_STALE=1 overrides.
+# The root applies from THIS checkout, so it has to be the default branch as it is on the remote:
+#   - behind it (tofu/github commits on the remote this checkout lacks): a merged change would read
+#     as "nothing to change", or be reverted. Refused for plan, apply, destroy and adopt.
+#     GITHUB_TF_ALLOW_STALE=1 overrides.
+#   - ahead of it (tofu/github commits here that are not on the remote's default branch): an
+#     unmerged change would go live unreviewed. Refused for apply and destroy; a plan from a
+#     branch is how a change is read before it merges, so plan only warns.
+#     GITHUB_TF_ALLOW_UNMERGED=1 overrides.
+#   - uncommitted changes under tofu/github: the same, with the same override.
 case "${1:-}" in
   plan|apply|destroy|adopt)
     def=$(git -C "$ROOT" symbolic-ref -q --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##') || def=""
@@ -66,6 +72,19 @@ case "${1:-}" in
       if [ "$missing" -gt 0 ] && [ "${GITHUB_TF_ALLOW_STALE:-}" != 1 ]; then
         echo "github-tf: REFUSED: this checkout lacks $missing commit(s) on origin/${def:-main} touching tofu/github. Pull first." >&2
         exit 1
+      fi
+      unmerged=$(git -C "$ROOT" rev-list --count FETCH_HEAD..HEAD -- tofu/github)
+      dirty=$(git -C "$ROOT" status --porcelain -- tofu/github | wc -l)
+      if [ "$unmerged" -gt 0 ] || [ "$dirty" -gt 0 ]; then
+        what="$unmerged commit(s) not on origin/${def:-main} and $dirty uncommitted file(s) under tofu/github"
+        case "$1" in
+          apply|destroy)
+            if [ "${GITHUB_TF_ALLOW_UNMERGED:-}" != 1 ]; then
+              echo "github-tf: REFUSED: $what. Merge first, then apply from the default branch." >&2
+              exit 1
+            fi ;;
+          *) echo "github-tf: NOTE: $what: this $1 is of an unmerged change." >&2 ;;
+        esac
       fi
     else
       echo "github-tf: WARN: could not fetch origin/${def:-main}; currency of tofu/github unchecked." >&2
@@ -98,9 +117,18 @@ export GITHUB_TOKEN
 
 tofu -chdir="$DIR" init -input=false >&2
 
+# GitHub API call with the admin token. The header goes to curl on stdin, so the token is not on
+# a command line for the process list to show. Usage: gh_api [curl options] <url>
+gh_api() {
+  printf 'Authorization: Bearer %s\n' "$GITHUB_TOKEN" |
+    curl -fsS -H @- -H 'Accept: application/vnd.github+json' "$@"
+}
+
 if [ "${1:-}" = adopt ]; then
   org=$(echo 'var.org' | tofu -chdir="$DIR" console | tr -d '"')
   repos=$(echo 'jsonencode(keys(var.repos))' | tofu -chdir="$DIR" console | jq -r 'fromjson[]')
+  tagged=$(echo 'jsonencode([for k, v in var.repos : k if v.protect_tags])' | tofu -chdir="$DIR" console | jq -r 'fromjson[]')
+  in_words() { for w in $2; do [ "$w" = "$1" ] && return 0; done; return 1; }
   for r in $repos; do
     # A repository this root declares (created by repos.tf, or imported) goes back into state too:
     # without it the next plan would try to create a repository that exists.
@@ -109,13 +137,18 @@ if [ "${1:-}" = adopt ]; then
       && ! tofu -chdir="$DIR" state show "github_repository.$raddr" >/dev/null 2>&1; then
       tofu -chdir="$DIR" import "github_repository.$raddr" "$r"
     fi
-    list=$(curl -fsS -H "Authorization: Bearer $GITHUB_TOKEN" -H 'Accept: application/vnd.github+json' \
-      "https://api.github.com/repos/$org/$r/rulesets?includes_parents=false") \
+    list=$(gh_api "https://api.github.com/repos/$org/$r/rulesets?includes_parents=false") \
       || { echo "github-tf: cannot list rulesets of $org/$r" >&2; exit 1; }
     for pair in default_branch:default-branch tags:tags; do
       addr="github_repository_ruleset.${pair%%:*}[\"$r\"]"
       id=$(printf '%s' "$list" | jq -r --arg n "${pair##*:}" '.[] | select(.name==$n and .source_type=="Repository") | .id')
       [ -n "$id" ] || continue
+      # A ruleset GitHub has and this root does not declare for the repository (protect_tags =
+      # false): nothing to import it into. Say so and go on; it stays until someone deletes it.
+      if [ "${pair%%:*}" = tags ] && ! in_words "$r" "$tagged"; then
+        echo "github-tf: WARN: $org/$r has a 'tags' ruleset ($id) that tofu does not declare (protect_tags = false). Not adopted." >&2
+        continue
+      fi
       tofu -chdir="$DIR" state show "$addr" >/dev/null 2>&1 && continue
       tofu -chdir="$DIR" import "$addr" "$r:$id"
     done
@@ -155,11 +188,16 @@ tofu -chdir="$DIR" "$@" || exit $?
 # repository of the organisation. SECURITY.md sends reporters to it, and there is no provider
 # resource for it. The PUT is idempotent and is never turned off here.
 org=$(echo 'var.org' | tofu -chdir="$DIR" console | tr -d '"')
-repos=$(curl -fsS -H "Authorization: Bearer $GITHUB_TOKEN" -H 'Accept: application/vnd.github+json' \
-  "https://api.github.com/orgs/$org/repos?type=public&per_page=100" | jq -r '.[] | select(.archived | not) | .full_name') \
-  || { echo "github-tf: listing public repositories failed" >&2; exit 1; }
+# Two steps, not a pipe: in a pipe the status would be jq's, and a failed listing would read as
+# "no repositories". One page of 100: say so when it is full, instead of stopping silently.
+listing=$(gh_api "https://api.github.com/orgs/$org/repos?type=public&per_page=100") \
+  || { echo "github-tf: listing public repositories failed; vulnerability reporting NOT checked" >&2; exit 1; }
+repos=$(printf '%s' "$listing" | jq -r '.[] | select(.archived | not) | .full_name') \
+  || { echo "github-tf: the repository listing is not the JSON expected" >&2; exit 1; }
+if [ "$(printf '%s' "$listing" | jq 'length')" -ge 100 ]; then
+  echo "github-tf: WARN: 100 or more public repositories; only the first 100 are handled here" >&2
+fi
 for r in $repos; do
-  if curl -fsS -o /dev/null -X PUT -H "Authorization: Bearer $GITHUB_TOKEN" -H 'Accept: application/vnd.github+json' \
-    "https://api.github.com/repos/$r/private-vulnerability-reporting"; then echo "github-tf: vulnerability reporting on: $r" >&2
+  if gh_api -o /dev/null -X PUT "https://api.github.com/repos/$r/private-vulnerability-reporting"; then echo "github-tf: vulnerability reporting on: $r" >&2
   else echo "github-tf: WARN: could not enable vulnerability reporting on $r (is it in the admin token's repository list?)" >&2; fi
 done

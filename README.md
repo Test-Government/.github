@@ -7,16 +7,31 @@ through. First-time setup, or recreating it from nothing: [BOOTSTRAP.md](BOOTSTR
 ## The rules it enforces
 
 - **Agents push branches, people merge.** Supervised agent sessions push branches and open pull
-  requests with a maintainer's own repository-scoped token, held outside the session; landing a
+  requests with a maintainer's own repository-scoped tokens, held outside the session; landing a
   pull request is a person's click.
+- **Tokens for an agent session: two, never one, and neither inside the session.** The rulesets
+  alone do not make "people merge" true: with no required approvals, whoever can merge a pull
+  request can merge their own, and an owner's token carries the owner's bypass of the tag rule.
+  What makes it true is the tokens and whatever holds them:
+  - a git token with Contents read and write, usable only for `git push` of branches: no API,
+    no tags;
+  - an API token with Pull requests, Issues and Actions read and write, and Contents **read**.
+    Without Contents write GitHub itself refuses a merge, a tag and a release;
+  - the holder of the tokens refuses what the API token's permissions still allow and a person
+    should decide: starting a workflow by hand, an approving review.
+
+  One token with Contents and Pull requests write, handed to an agent, undoes all of it. A
+  repository gets agent access only once it is in `var.repos`: without a ruleset, a branch push
+  reaches its default branch.
 - **Default branch** of every repository: changes arrive by pull request only, no force-push, no
   deletion, optional required checks. Approvals and code-owner review are off by default
   (`required_approvals`, `require_code_owner_review` per repository): with a couple of
   maintainers, a rule that needs a second person stops the work.
 - **Tags:** only organisation owners create, move or delete them. A tag is what publishes, so a
   release stays a person's decision. The exception is a repository that releases on merge: its
-  workflow creates the tag after a merge to the default branch, so its tags are left unprotected
-  (`protect_tags = false`) and the merged pull request is the release decision.
+  workflow creates the tag after a merge to the default branch, so creating a tag is open there
+  (`workflow_creates_tags = true`) and the merged pull request is the release decision. Moving
+  or deleting an existing tag stays with owners.
 - **Organisation owners** bypass the tag rule, and the default-branch rule only through a pull
   request (`admin_bypass_mode`): nobody pushes to a default branch directly.
 - **The agents App** (`github-apps.json`, `scripts/github-app.sh`) is declared for unsupervised
@@ -88,6 +103,10 @@ devbox run github-tofu apply
   public repository, or may follow the repository's visibility. Check at the first release and
   correct this line.
 - Creating a GitHub App, and creating the admin token.
+- Approving an OAuth app for the organisation. Third-party application access is restricted, so
+  a tool that logs in through the browser (an IDE's GitHub integration, the `gh` command line) is
+  refused with a 403 until an owner grants it organisation access. SSH keys and personal access
+  tokens are not affected: a clone with an SSH remote pushes without any approval.
 
 ## Known provider behaviour
 

@@ -30,19 +30,21 @@ variable "repos" {
     required_checks           = optional(list(string), [])
     required_approvals        = optional(number, 0)   # a maintainer merges their own PR; raise it when a second reviewer exists
     require_code_owner_review = optional(bool, false) # with it on, an owner's own PR needs another owner
-    protect_tags              = optional(bool, true)  # false where a workflow creates the tags: release on merge
+    protect_tags              = optional(bool, true)  # false: no tag ruleset at all
+    workflow_creates_tags     = optional(bool, false) # release on merge: anyone with write may CREATE a tag; moving and deleting stay with owners
   }))
   # Starting small: a repository not listed here has no ruleset and is untouched. Removing an
-  # entry deletes that repository's rulesets. required_checks are left empty on purpose: fill
-  # each in once its workflow has a job that runs on pull_request.
+  # entry deletes that repository's rulesets. required_checks: fill one in only once its job
+  # has reported on a pull request, under the name the run shows.
   # Not yet under rules: smart-id-mock, ee-eid-test-pki, TSL-test-server, mock-ocsp,
   # DD4J-test-application, nordic-testing-days-2024-talk.
   default = {
-    ".github" = {} # this repository
+    # this repository. The check is ci-self.yml's job: caller job / called job.
+    ".github" = { required_checks = ["ci / ci"] }
     # Smart-ID v2 only: no new work, fixed if it breaks for someone (default branch master).
-    # Tags unprotected: its workflow releases on every merge to master and creates the version
-    # tag itself, with the workflow's token. A tag ruleset would refuse that step.
-    SID-mock       = { protect_tags = false }
+    # Its workflow releases on every merge to master and creates the version tag itself, with the
+    # workflow's token: creating a tag is open there, moving and deleting one are not.
+    SID-mock       = { workflow_creates_tags = true }
     mobile-id-mock = {} # new, created by repos.tf; where a ruleset change is tried first
   }
 }
